@@ -1,7 +1,6 @@
 # ifb-cg
 
 Computação Gráfica
-Prof. Raimundo Claudio Vasconcelos
 Especificação do Trabalho 1
 Descrição
 Este primeiro trabalho de Computação Gráfica consiste em desenvolver um programa
