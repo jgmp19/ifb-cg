@@ -6,29 +6,35 @@ float beta = 0;
 float delta = 1	;
 float stepx = 0.0;
 float stepy = 0.0;
+int pressed = 0;
 
 void init(void)
 {
-	glClearColor(0, 0, 0, 0); //define a cor de fundo
+	glClearColor(0, 0, 0, 0); 
 	gluOrtho2D(-200, 200, -200, 200);
 }
 
-
 void display(void)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
-	glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
+	glClear(GL_COLOR_BUFFER_BIT);         
+	if ((stepy > 0) && (pressed == 1)){
+		glRotatef(-180.0f,1,1,0);
+	}
+	else if((stepy < 0) && (pressed == 1)	){
+		glRotatef(180.0f,1,1,0);
+	}
+	pressed = 0;
 	glPushMatrix();
+	glTranslatef(stepx,stepy,1.0);
 	glScalef(delta, delta, 1.0);
-	glTranslatef(stepx,stepy,1);
 	glRotatef(beta, 0, 0, 1);
-	// Draw a Red 1x1 Square centered at origin
-	glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-		 glColor3f(1.0f, 0.0f, 0.0f); // Red
-		 glVertex2f(-10.0f, -10.0f);    // x, y
-		 glVertex2f( 10.0f, -10.0f);
-		 glVertex2f( 10.0f,  10.0f);
-		 glVertex2f(-10.0f,  10.0f);
+	glBegin(GL_QUADS);              
+		 glColor3f(0.5f, 0.2f, 0.5f); 
+		 glVertex2f(-20.0f, -20.0f);    
+		 glVertex2f( 20.0f, -20.0f);
+		 glVertex2f( 20.0f,  20.0f);
+		 glVertex2f(-20.0f,  20.0f);
 	glEnd();
 	glPopMatrix();
 	glFlush();
@@ -38,26 +44,24 @@ void scale(int key, int x, int y)
 {
 	switch (key)
 	{
-	case GLUT_KEY_UP: //faz zoom − in
-  	delta *= 1.1;
+	case GLUT_KEY_UP:
+  		delta *= 1.1;
 		break;
-	case GLUT_KEY_DOWN: //faz zoom − out
-    delta *= 0.9;
+	case GLUT_KEY_DOWN: 
+    		delta *= 0.9;
 		break;
 	}
-	//forçar o redesenho da tela usando double − buffering
 	glutPostRedisplay();
-	glFlush();
 }
 
 void rotate(int key, int x, int y)
 {
 	switch (key)
 	{
-	case GLUT_KEY_UP: //gira sobre o eixo − y
+	case GLUT_KEY_UP: 
 		beta += 1.0;
 		break;
-	case GLUT_KEY_DOWN: //gira sobre o eixo − y
+	case GLUT_KEY_DOWN: 
 		beta -= 1.0;
 		break;
 	}
@@ -90,7 +94,6 @@ void translate(int key, int x, int y)
 
 void keyboard(unsigned char key, int x, int y)
 {
-	// ' q ' ou ' Q ' ou ESC para sair do sistema
 	if ('q' == key || 'Q' == key || 27 == key)
 	{
 		exit(0);
@@ -104,8 +107,8 @@ void keyboard(unsigned char key, int x, int y)
 	if ('s' == key || 'S' == key) {
 		glutSpecialFunc(scale);
 	}
-	if ('m' == key || 'M' == key) {
-		glRotatef(180.0f,0,1,0);
+	if ('m' == key || 'M' == key) {	
+		pressed = 1;
 		glutPostRedisplay();
 	}
 	if('i' ==  key || 'I' == key){
@@ -113,7 +116,6 @@ void keyboard(unsigned char key, int x, int y)
 		stepy = 0;
 		beta = 0;
 		delta = 1;
-		printf("Chegou aqui\n");
 		glutPostRedisplay();
 	}
 }
@@ -122,12 +124,11 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-	glutInitWindowSize(400, 350);
+	glutInitWindowSize(400, 400);
 	glutCreateWindow("Trabalho");
 	init();
-	//funções de callback
-	glutDisplayFunc(display); //registra função de desenho
-	glutKeyboardFunc(keyboard); //registra teclado
+	glutDisplayFunc(display); 
+	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;
 }
